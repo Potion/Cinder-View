@@ -21,14 +21,16 @@ using namespace ci;
 using namespace ci::app; 
 using namespace std;
 
-const bool MULTITOUCH_ENABLED	= 0;
-const bool USE_SECONDARY_SCREEN = 1;
-const int DEFAULT_TEST			= 5;
-const vec2 WINDOW_SIZE			= vec2( 1220, 720 );
-const vec2 INFO_ROW_SIZE		= vec2( 250, 20 );
+const int DEFAULT_TEST						= 0;
+const bool MULTITOUCH_ENABLED				= 0;
+const bool SCREEN_INDEX						= 1;
+const bool WINDOW_CONTENT_SCALING_ENABLED	= true;
+const bool FULLSCREEN						= true;
+const vec2 WINDOW_SIZE						= vec2( 1220, 720 );
+const vec2 INFO_ROW_SIZE					= vec2( 250, 20 );
 
 
-#define LIVEPP_ENABLED 1
+#define LIVEPP_ENABLED 0
 
 #if LIVEPP_ENABLED
 
@@ -254,14 +256,29 @@ void prepareSettings( app::App::Settings *settings )
 	lpp::lppEnableAllCallingModulesSync( livePP );
 #endif
 
-	//settings->setWindowPos( 0, 0 );
-	settings->setWindowSize( WINDOW_SIZE.x, WINDOW_SIZE.y );
-
-	// move app to secondary display
-	if( USE_SECONDARY_SCREEN && Display::getDisplays().size() > 1 ) {
-		settings->setDisplay( Display::getDisplays()[1] );
-		settings->setFullScreen( true );
+	size_t displayIndex = SCREEN_INDEX;
+	bool fullscreen = FULLSCREEN;
+	if( SCREEN_INDEX >= Display::getDisplays().size() - 1 ) {
+		CI_LOG_W( "SCREEN_INDEX out of range: " << SCREEN_INDEX );
+		displayIndex = 0;
+		fullscreen = false;
 	}
+
+	app:DisplayRef display = Display::getDisplays()[displayIndex];
+
+	CI_LOG_I( "display name: " << display->getName() << ", size: " << display->getSize() << ", content scale: " << display->getContentScale() );
+
+	settings->setDisplay( display );
+	settings->setFullScreen( fullscreen );
+	//settings->setWindowPos( 0, 0 );
+	if( WINDOW_CONTENT_SCALING_ENABLED ) {
+		//settings->setHighDensityDisplayEnabled();
+		//settings->setWindowSize( WINDOW_SIZE.x * display->getContentScale(), WINDOW_SIZE.y * display->getContentScale() );
+	}
+	else {
+		settings->setWindowSize( WINDOW_SIZE.x, WINDOW_SIZE.y );
+	}
+
 
 	if( MULTITOUCH_ENABLED ) {
 		settings->setMultiTouchEnabled();

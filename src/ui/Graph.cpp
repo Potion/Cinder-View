@@ -51,6 +51,7 @@ Graph::Graph( const ci::app::WindowRef &window )
 	}
 
 	mRenderer = make_shared<ui::Renderer>();
+	mRenderer->setContentScale( mWindow->getContentScale() );
 }
 
 Graph::~Graph()

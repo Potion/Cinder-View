@@ -113,7 +113,7 @@ TextRef TextManager::loadTextFromFileImpl( const fs::path &filePath, float size 
 	}
 
 	// account for content scale when using GDI
-	float sizeScaled = size / app::getWindow()->getContentScale(); // TODO: how to use Graph's app::Window for content size?
+	float sizeScaled = size / app::getWindow()->getContentScale(); // TODO: use float on Graph or Renderer for content size
 
 	auto font = Font( loadFile( filePath ), sizeScaled );
 	TextRef result = TextRef( new Text( font, size ) );

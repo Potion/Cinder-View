@@ -162,6 +162,9 @@ class CI_UI_API Renderer {
 
 	std::string printCurrentFrameBuffersToString() const;
 
+	void	setContentScale( float scale )	{ mContentScale = scale; }
+	float	getContentScale() const			{ return mContentScale; }
+
 	// TODO: make private and provide public api
 	std::vector<std::pair<ci::ivec2, ci::ivec2>> mScissorStack;
 
@@ -173,6 +176,7 @@ class CI_UI_API Renderer {
 
 	ci::gl::GlslProgRef         mGlslFrameBuffer;
 	ci::gl::BatchRef			mBatchSolidRect, mBatchImage;
+	float						mContentScale = 1;
 };
 
 } // namespace ui
